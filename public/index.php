@@ -12,5 +12,7 @@ try {
     var_dump($e);
 }
 
+echo 'updated by git';
+
 
 

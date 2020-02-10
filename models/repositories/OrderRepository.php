@@ -15,13 +15,12 @@ class OrderRepository extends Repository
         return Order::class;
     }
 
-    public function saveCurrent($name = null, $phone = null)
+    public function saveCart($name = null, $phone = null)
     {
         if (App::call()->cartRepository->getCountWhere('session_id', App::call()->session->getSession_id()) > 0) {
-            // сохраняем текущую корзину
             $session_id = App::call()->session->getSession_id();
             $user_id = (int)App::call()->session->getUser_id();
-            $order = new Order($session_id, $user_id, $name, $phone,1);
+            $order = new Order($session_id, $user_id, $name, $phone,'new');
 
             App::call()->orderRepository->save($order);
         }

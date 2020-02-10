@@ -5,7 +5,6 @@ namespace app\models\repositories;
 
 
 use app\engine\App;
-use app\engine\Session;
 use app\models\entities\User;
 use app\models\Repository;
 
@@ -45,6 +44,7 @@ class UserRepository extends Repository
     public function getName() {
         return App::call()->session->getLogin();
     }
+
     public function authentication($login, $pass) {
         $user = static::getOneWhere('login', $login);
         if (password_verify($pass, $user->pass)) {
@@ -57,10 +57,12 @@ class UserRepository extends Repository
             return false;
         }
     }
+
     public function getEntityClass()
     {
         return User::class;
     }
+
     public function getTableName()
     {
         return "users";

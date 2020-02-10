@@ -4,6 +4,7 @@
 namespace app\engine;
 
 use app\engine\Session;
+use app\models\repositories\SessionRepository;
 use app\models\repositories\CartRepository;
 use app\models\repositories\OrderRepository;
 use app\models\repositories\ProductRepository;
@@ -14,7 +15,9 @@ use app\traits\TSingletone;
  * Class App
  * @property Session $session
  * @property Request $request
+ * @property Validate $validate
  * @property Db $db
+ * @property SessionRepository $sessionRepository;
  * @property CartRepository $cartRepository
  * @property UserRepository $userRepository
  * @property ProductRepository $productRepository

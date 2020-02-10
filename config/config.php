@@ -6,6 +6,8 @@
 //define("CONTROLLER_NAMESPACE", "app\\controllers\\");
 use app\engine\Request;
 use app\engine\Session;
+use app\engine\Validate;
+use app\models\repositories\SessionRepository;
 use app\models\repositories\CartRepository;
 use app\models\repositories\OrderRepository;
 use app\models\repositories\ProductRepository;
@@ -31,9 +33,15 @@ return [
         ],
         'request' => [
             'class' => Request::class
+        ],
+        'validate' => [
+            'class' => Validate::class
         ]
     ],
     'repository' => [
+        'sessionRepository' => [
+            'class' => sessionRepository::class
+        ],
         'cartRepository' => [
             'class' => CartRepository::class
         ],

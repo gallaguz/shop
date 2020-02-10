@@ -4,7 +4,7 @@
 namespace app\controllers;
 
 use app\engine\App;
-use app\models\entities\Order;
+use app\models\entities\Session;
 
 class AuthController extends Controller
 {
@@ -13,19 +13,26 @@ class AuthController extends Controller
         $login = App::call()->request->getParams()['login'];
         $pass = App::call()->request->getParams()['pass'];
 
-        if (App::call()->userRepository->authentication($login, $pass)) {
-            $user = App::call()->userRepository->getOneWhere('login', $login);
-            $user->hash = App::call()->userRepository->hash();
+        if (App::call()->validate->login($login) && App::call()->validate->login($pass)) {
+            if (App::call()->userRepository->authentication($login, $pass)) {
 
-            App::call()->userRepository->save($user);
+                $user = App::call()->userRepository->getOneWhere('login', $login);
+                $user->hash = App::call()->userRepository->hash();
+                App::call()->userRepository->save($user);
 
-            App::call()->session->setLogin($login);
-            App::call()->session->setUser_id($user->id);
+                App::call()->session->setLogin($login);
+                App::call()->session->setUser_id($user->id);
 
-            header("Location: " . $_SERVER['HTTP_REFERER']);
+                $session = new Session(App::call()->session->getSession_id(), App::call()->session->getUser_id());
+                App::call()->sessionRepository->save($session);
+
+                header("Location: " . $_SERVER['HTTP_REFERER']);
+            } else {
+                echo $this->render('error', ['error' => 'Неверный логин или пароль']);
+            };
         } else {
-            echo $this->render('error', ['error' => 'login', 'msg' => 'Неверный логин или пароль']);
-        };
+            echo $this->render('error', ['error' => 'Неверный формат ввода']);
+        }
     }
 
     public function actionLogout() {
@@ -37,7 +44,7 @@ class AuthController extends Controller
         }
 
         // Сохраняем текущую корзину в новый заказ
-        App::call()->orderRepository->saveCurrent();
+        App::call()->orderRepository->saveCart();
 
         App::call()->session->setUser_id(null);
         App::call()->session->setLogin(null);
@@ -46,7 +53,6 @@ class AuthController extends Controller
         setcookie("hash", '', time() - 60*60*24*7, "/");
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit();
-
     }
 
 }

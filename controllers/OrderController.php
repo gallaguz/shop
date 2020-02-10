@@ -41,11 +41,9 @@ class OrderController extends Controller
 
     public function actionAdd()
     {
-        //Нужен класс для валидации входящих данных
-
         $name = App::call()->request->getParams()['name'];
         $phone = App::call()->request->getParams()['phone'];
-        App::call()->orderRepository->saveCurrent($name, $phone);
+        App::call()->orderRepository->saveCart($name, $phone);
 
         App::call()->session->regenerateSession_id();
 

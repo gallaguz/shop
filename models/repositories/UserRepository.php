@@ -14,9 +14,6 @@ class UserRepository extends Repository
     public function isAuth() {
         $hash = $_COOKIE['hash'];
 
-
-        // App::call()->session->getSession_id();
-
         if (is_null($hash)) {
             $user = static::getOneWhere('login', App::call()->session->getLogin());
         } else {
@@ -33,6 +30,18 @@ class UserRepository extends Repository
             return false;
         }
     }
+
+    public function hash()
+    {
+        if (!is_null(App::call()->request->getParams()['save'])) {
+            $hash = uniqid(rand(), true);
+            setcookie("hash", $hash, time() + 60*60*24*7, "/");
+            return $hash;
+        } else {
+            return '';
+        }
+    }
+
     public function getName() {
         return App::call()->session->getLogin();
     }

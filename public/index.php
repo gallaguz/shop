@@ -9,7 +9,6 @@ include realpath("../vendor/Autoload.php");
 try {
     App::call()->run($config);
 } catch (\Exception $e) {
-    var_dump($e);
+    var_dump('some error');
+    // var_dump($e);
 }
-
-// новый комментарий

@@ -14,16 +14,8 @@ class AuthController extends Controller
         $pass = App::call()->request->getParams()['pass'];
 
         if (App::call()->userRepository->authentication($login, $pass)) {
-
             $user = App::call()->userRepository->getOneWhere('login', $login);
-
-            if (!is_null(App::call()->request->getParams()['save'])) {
-                $hash = uniqid(rand(), true);
-                $user->hash = $hash;
-                setcookie("hash", $hash, time() + 60*60*24*7, "/");
-            } else {
-                $user->hash = '';
-            }
+            $user->hash = App::call()->userRepository->hash();
 
             App::call()->userRepository->save($user);
 
@@ -32,7 +24,7 @@ class AuthController extends Controller
 
             header("Location: " . $_SERVER['HTTP_REFERER']);
         } else {
-            Die("Не верный пароль!");
+            echo $this->render('error', ['error' => 'login', 'msg' => 'Неверный логин или пароль']);
         };
     }
 

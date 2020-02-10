@@ -1,0 +1,7 @@
+<h2>Заказы:</h2><hr>
+{{ message }}
+{% for item in orders %}
+    <p>
+        <a href="/order/get/?id={{ item.id }}">Date: {{ item.date }}</a>
+    </p>
+{% endfor %}

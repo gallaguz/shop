@@ -1,0 +1,7 @@
+{% if auth == true %}
+    <a href="/session/regenerateId">Новый session_id</a>
+    <hr>
+    {% for item in sessions %}
+        <a href="/basket/show/?session_id={{ item.id }}">{{ item.session_id }}</a> Date: {{ item.date }}<br>
+    {% endfor %}
+{% endif %}

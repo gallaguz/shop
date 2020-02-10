@@ -1,0 +1,27 @@
+{% if count > 0 %}
+    <h2>Корзина</h2><hr>
+    {% for item in products %}
+        <div id="item_{{ item.cart_id }}">
+            <h2>{{ item.title }}</h2>
+            <p>Описание: {{ item.description }}</p>
+            <p>Цена: {{ item.price }}</p>
+            <input data-id="{{ item.cart_id }}" class="itemCount" type="number" value="{{ item.count }}">
+            <button data-id="{{ item.cart_id }}" class="delete">Удалить</button>
+        </div>
+    {% endfor %}
+    <hr>
+
+    <p id="addOrderForm">
+        <b>Оформление заказа:</b>
+
+        <form action="/order/add" method="post">
+            <input type="text" name="name" placeholder="Имя"><br>
+            <input type="text" name="phone" placeholder="Телефон"><br>
+            <input type="hidden" name="id" value="{{ session_id }}">
+            <input type="submit" name="addOrder" value="Оформить">
+        </form>
+    </p>
+
+{% else %}
+    <h2>Корзина пуста</h2><hr>
+{% endif %}

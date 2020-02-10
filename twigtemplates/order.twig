@@ -1,0 +1,14 @@
+<h2>Заказ:</h2><hr>
+{% for item in products %}
+    <div id="item_{{ item.cart_id }}">
+        <a href="/product/card/?id={{ item.product_id }}"><h3>{{ item.title }}: [ {{ item.count }} ]</h3></a>
+        <p>Описание: {{ item.description }}</p>
+        <p>Цена: {{ item.price }}</p>
+    </div>
+{% endfor %}
+
+{% if status == 0 %}
+
+{% else %}
+    Заказ уже оформлен
+{% endif %}

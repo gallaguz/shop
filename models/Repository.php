@@ -58,7 +58,7 @@ abstract class Repository implements IModel
         return App::call()->db->queryAll($sql, ['value' => $value]);
     }
 
-    public function insert(Model $entity)
+    public function insert(Entity $entity)
     {
         $params = [];
         $columns = [];
@@ -81,7 +81,7 @@ abstract class Repository implements IModel
 
     }
 
-    public function update(Model $entity)
+    public function update(Entity $entity)
     {
         $params = [];
         $columns = [];
@@ -99,7 +99,7 @@ abstract class Repository implements IModel
         App::call()->db->execute($sql, $params);
     }
 
-    public function save(Model $entity)
+    public function save(Entity $entity)
     {
         if (is_null($entity->id)) {
             $this->insert($entity);
@@ -109,7 +109,7 @@ abstract class Repository implements IModel
 
     }
 
-    public function delete(Model $entity)
+    public function delete(Entity $entity)
     {
         $tableName = $this->getTableName();
         $sql = "DELETE FROM {$tableName} WHERE id = :id";

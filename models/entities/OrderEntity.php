@@ -4,9 +4,9 @@
 namespace app\models\entities;
 
 
-use app\models\Model;
+use app\models\Entity;
 
-class Order extends Model
+class OrderEntity extends Entity
 {
     protected $id;
     protected $session_id;

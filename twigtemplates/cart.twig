@@ -11,17 +11,36 @@
     {% endfor %}
     <hr>
 
-    <p id="addOrderForm">
-        <b>Оформление заказа:</b>
-
-        <form action="/order/add" method="post">
-            <input type="text" name="name" placeholder="Имя"><br>
-            <input type="text" name="phone" placeholder="Телефон"><br>
-            <input type="hidden" name="id" value="{{ session_id }}">
-            <input type="submit" name="addOrder" value="Оформить">
-        </form>
-    </p>
+    <input id="showAddOrder" type="button" value="Оформить заказ">
+    <p id="addOrder"></p>
 
 {% else %}
     <h2>Корзина пуста</h2><hr>
 {% endif %}
+
+
+<script>
+
+
+    let showAddOrderFlag = false;
+    let showAddOrder = document.getElementById('showAddOrder')
+    showAddOrder.addEventListener('click', () => {
+        if (showAddOrderFlag === false) {
+            document.getElementById('addOrder').innerHTML =
+                '<b>Оформление заказа:</b>\n' +
+                '\n' +
+                '        <form action="/order/add" method="post">\n' +
+                '            <input type="text" name="name" placeholder="Имя"><br>\n' +
+                '            <input type="text" name="phone" placeholder="Телефон"><br>\n' +
+                '            <input type="hidden" name="id" value="{{ session_id }}">\n' +
+                '            <input type="submit" name="addOrder" value="Отправить">\n' +
+                '        </form>';
+            showAddOrder.setAttribute('value', 'Оформить позже');
+            showAddOrderFlag = true;
+        } else {
+            showAddOrder.setAttribute('value', 'Оформить заказ');
+            document.getElementById('addOrder').innerHTML = '';
+            showAddOrderFlag = false;
+        }
+    })
+</script>

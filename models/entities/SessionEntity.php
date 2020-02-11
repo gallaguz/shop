@@ -4,9 +4,9 @@
 namespace app\models\entities;
 
 
-use app\models\Model;
+use app\models\Entity;
 
-class Session extends Model
+class SessionEntity extends Entity
 {
     protected $session_id;
     protected $user_id;

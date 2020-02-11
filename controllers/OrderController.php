@@ -4,7 +4,7 @@
 namespace app\controllers;
 
 use app\engine\App;
-use app\models\entities\Order;
+use app\models\entities\OrderEntity;
 use app\models\repositories\OrderRepository;
 
 

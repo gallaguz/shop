@@ -6,7 +6,7 @@ namespace app\controllers;
 
 use app\engine\App;
 
-use app\models\entities\Cart;
+use app\models\entities\CartEntity;
 use app\models\repositories\CartRepository;
 
 class CartController extends Controller
@@ -64,7 +64,7 @@ class CartController extends Controller
         if ($cart) {
             $cart->count = $cart->count + 1;
         } else {
-            $cart = new Cart($session_id, $product_id);
+            $cart = new CartEntity($session_id, $product_id);
             $cart->price = App::call()->productRepository->getOne($product_id)->price;
             $cart->user_id = is_null($user_id)? 0: $user_id;
             $cart->count = 1;

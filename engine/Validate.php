@@ -18,6 +18,14 @@ class Validate
         return true;
     }
 
+    public function loginPass($login, $pass)
+    {
+        if ($this->login($login) && $this->pass($pass)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function pass($pass)
     {
         return true;

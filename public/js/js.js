@@ -1,3 +1,46 @@
+const app = new Vue({
+    delimiters: ['${', '}'],
+    el: '#app',
+    data: {
+        count: 0,
+        cart: []
+    },
+    methods: {
+        fillCart: function () {
+            fetch(`/api/cart/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    qty: this.test
+                }),
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            })
+                .then(res => res.json())
+                .then(res => {
+                    this.cart = res;
+                    console.log(res);
+                })
+        },
+        getCount: function () {
+            fetch(`/api/getCountItemsInCart/`, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+            })
+                .then(res => res.json())
+                .then(res => {
+                    this.count = res;
+                })
+        }
+    },
+    mounted () {
+        this.getCount();
+    }
+});
+
+
 function deleteProduct(id)
 {
     (

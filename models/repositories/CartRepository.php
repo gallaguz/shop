@@ -6,7 +6,7 @@ namespace app\models\repositories;
 
 use app\engine\App;
 
-use app\models\entities\Cart;
+use app\models\entities\CartEntity;
 use app\models\Repository;
 
 class CartRepository extends Repository
@@ -28,7 +28,7 @@ class CartRepository extends Repository
 
     public function getEntityClass()
     {
-        return Cart::class;
+        return CartEntity::class;
     }
 
     public function getTableName()

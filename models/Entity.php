@@ -5,7 +5,7 @@ namespace app\models;
 
 
 
-abstract class Model
+abstract class Entity
 {
     public function __set($name, $value)
     {

@@ -4,9 +4,9 @@
 namespace app\models\entities;
 
 
-use app\models\Model;
+use app\models\Entity;
 
-class Product extends Model
+class ProductEntity extends Entity
 {
     protected $id;
     protected $title;

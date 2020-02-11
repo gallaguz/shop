@@ -4,6 +4,8 @@
 namespace app\engine;
 
 
+use app\models\entities\UserEntity;
+
 class Session
 {
     public function __set($name, $value)
@@ -15,6 +17,13 @@ class Session
         return $_SESSION[$name];
     }
 
+    public function newSession()
+    {
+        unset($_SESSION['login']);
+        unset($_SESSION['user_id']);
+        $this->regenerateSession_id();
+    }
+
     public function getSession_id()
     {
         return session_id();
@@ -23,28 +32,20 @@ class Session
     {
         return $_SESSION['login'];
     }
-    public function setLogin($login)
+    public function setLogin(UserEntity $user)
     {
-        $_SESSION['login'] = $login;
+        $_SESSION['login'] = $user->login;
     }
     public function regenerateSession_id()
     {
         return session_regenerate_id();
     }
-    public function getPass()
-    {
-        return $_SESSION['pass'];
-    }
-    public function getHash()
-    {
-        return $_SESSION['hash'];
-    }
     public function getUser_id()
     {
         return $_SESSION['user_id'];
     }
-    public function setUser_id($user_id)
+    public function setUser_id(UserEntity $user)
     {
-        $_SESSION['user_id'] = $user_id;
+        $_SESSION['user_id'] = $user->id;
     }
 }

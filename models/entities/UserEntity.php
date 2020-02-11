@@ -4,9 +4,9 @@
 namespace app\models\entities;
 
 
-use app\models\Model;
+use app\models\Entity;
 
-class User extends Model
+class UserEntity extends Entity
 {
     protected $id;
     protected $login;

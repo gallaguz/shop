@@ -5,11 +5,17 @@ namespace app\models\repositories;
 
 
 use app\engine\App;
-use app\models\entities\User;
+use app\models\entities\UserEntity;
 use app\models\Repository;
 
 class UserRepository extends Repository
 {
+    public function saveVisit($user)
+    {
+        $user->hash = $this->hash();
+        $this->save($user);
+    }
+
     public function isAuth() {
         $hash = $_COOKIE['hash'];
 
@@ -21,8 +27,8 @@ class UserRepository extends Repository
 
         if ($user !== false) {
 
-            App::call()->session->setLogin($user->login);
-            App::call()->session->setUser_id($user->id);
+            App::call()->session->setLogin($user);
+            App::call()->session->setUser_id($user);
 
             return true;
         } else {
@@ -49,8 +55,8 @@ class UserRepository extends Repository
         $user = static::getOneWhere('login', $login);
         if (password_verify($pass, $user->pass)) {
 
-            App::call()->session->setLogin($user->login);
-            App::call()->session->setUser_id($user->id);
+            App::call()->session->setLogin($user);
+            App::call()->session->setUser_id($user);
 
             return true;
         } else {
@@ -60,7 +66,7 @@ class UserRepository extends Repository
 
     public function getEntityClass()
     {
-        return User::class;
+        return UserEntity::class;
     }
 
     public function getTableName()

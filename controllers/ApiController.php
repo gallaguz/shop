@@ -5,6 +5,7 @@ namespace app\controllers;
 
 
 use app\engine\App;
+use app\models\entities\CartEntity;
 
 class ApiController extends Controller
 {
@@ -59,4 +60,6 @@ class ApiController extends Controller
             ['id' => 3, 'title' => 'Сало', 'price' => 400, 'img' => '']
         ]);
     }
+
+
 }

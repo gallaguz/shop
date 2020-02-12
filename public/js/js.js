@@ -1,16 +1,30 @@
+let cartComponent = {
+    delimiters: ['${', '}'],
+    props: ['cart'],
+    template: '<ol>' +
+        '        <li' +
+        '                v-for="item in cart"' +
+        '                v-bind:item="item"' +
+        '                v-bind:key="item.product_id"' +
+        '        >${ item.title } - ${ item.price }</li>' +
+        '    </ol>'
+};
 const app = new Vue({
     delimiters: ['${', '}'],
     el: '#app',
+    components: {
+        'cart-component': cartComponent
+    },
     data: {
         count: 0,
         cart: []
     },
     methods: {
-        fillCart: function () {
-            fetch(`/api/cart/`, {
+        getCart: function () {
+            fetch(`/cart/getCart/`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    qty: this.test
+                    api: true
                 }),
                 headers: {
                     'Content-type': 'application/json',
@@ -18,25 +32,34 @@ const app = new Vue({
             })
                 .then(res => res.json())
                 .then(res => {
-                    this.cart = res;
+                    this.cart = res.cart;
                     console.log(res);
                 })
         },
         getCount: function () {
-            fetch(`/api/getCountItemsInCart/`, {
+            fetch(`/cart/getCount/`, {
                 method: 'POST',
+                body: JSON.stringify({
+                    api: true
+                }),
                 headers: {
                     'Content-type': 'application/json',
                 },
             })
                 .then(res => res.json())
                 .then(res => {
-                    this.count = res;
+                    this.count = res.count;
                 })
         }
     },
     mounted () {
         this.getCount();
+        //this.getCart();
+    },
+    computed: {
+        total() {
+            return this.cart.reduce((acc, item) => acc + item.count * item.price, 0);
+        }
     }
 });
 
@@ -51,6 +74,7 @@ function deleteProduct(id)
                     'Content-Type': 'application/json'
                 }),
                 body: JSON.stringify({
+                    api: true,
                     id: id
                 })
             });
@@ -64,16 +88,19 @@ function deleteProduct(id)
 let by = document.querySelectorAll('.buy');
 by.forEach((elem) => {
     elem.addEventListener('click', () => {
+        console.log('click');
+
         let id = elem.getAttribute('data-id');
         let price = elem.getAttribute('data-price');
         (
             async () => {
-                const response = await fetch('/cart/Add/', {
+                const response = await fetch('/cart/add/', {
                     method: 'POST',
                     headers: new Headers({
                         'Content-Type': 'application/json'
                     }),
                     body: JSON.stringify({
+                        api: true,
                         id: id,
                         price: price
                     })
@@ -122,6 +149,29 @@ buttons.forEach((elem) => {
         deleteProduct(id);
     })
 });
+
+
+let showAddOrderFlag = false;
+let showAddOrder = document.getElementById('showAddOrder')
+showAddOrder.addEventListener('click', () => {
+    if (showAddOrderFlag === false) {
+        document.getElementById('addOrder').innerHTML =
+            '<b>Оформление заказа:</b>\n' +
+            '\n' +
+            '        <form action="/order/add" method="post">\n' +
+            '            <input type="text" name="name" placeholder="Имя"><br>\n' +
+            '            <input type="text" name="phone" placeholder="Телефон"><br>\n' +
+            '            <input type="hidden" name="id" value="{{ session_id }}">\n' +
+            '            <input type="submit" name="addOrder" value="Отправить">\n' +
+            '        </form>';
+        showAddOrder.setAttribute('value', 'Оформить позже');
+        showAddOrderFlag = true;
+    } else {
+        showAddOrder.setAttribute('value', 'Оформить заказ');
+        document.getElementById('addOrder').innerHTML = '';
+        showAddOrderFlag = false;
+    }
+})
 
 
 // let BasketComponent = {

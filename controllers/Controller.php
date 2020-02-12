@@ -29,6 +29,12 @@ abstract class Controller
         }
     }
 
+    public function apiJson($params)
+    {
+        header('Content-Type: application/json');
+        echo json_encode($params);
+    }
+
     public function render($template, $params = []) {
         if ($this->useLayout) {
             return $this->renderTemplate("layouts/{$this->layout}", [

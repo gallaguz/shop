@@ -14,7 +14,7 @@ class AdminController extends Controller
     }
     public function actionTest()
     {
-        echo $this->render('test2', []);
+        echo $this->render('test', []);
     }
     public function actionPanel()
     {

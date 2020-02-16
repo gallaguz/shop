@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <script src="/js/js.js" defer></script>
+    <link rel="stylesheet" href="/css/css.css">
+</head>
+<body>
+<div id="app">
+
+    <div v-if="auth">
+        <a href="/user/profile">${ login }</a>
+        <a href="/order/">История заказов</a>
+        <a href="/user/logout/"> [Выход]</a>
+    </div>
+    <div v-else>
+        <login-form></login-form>
+    </div>
+
+    <hr>
+
+    {{ menu | raw }}
+
+    <hr>
+
+    <cart-button v-bind:cart="cart" @get-cart="getCart"></cart-button>${ count }
+
+    <hr>
+
+    <cart-component v-bind:cart="cart" v-if="cartSeen"></cart-component>
+
+
+    <hr>
+
+    <catalog-component v-bind:catalog="catalog"></catalog-component>
+
+    <hr>
+
+    {{ content | raw }}
+</div>
+</body>
+</html>

@@ -20,14 +20,14 @@ class UserRepository extends Repository
         $hash = $_COOKIE['hash'];
 
         if (is_null($hash)) {
-            $user = static::getOneWhere('login', App::call()->session->getLogin());
+            $user = static::getOneWhere('username', App::call()->session->getUsername());
         } else {
             $user = static::getOneWhere('hash', $hash);
         }
 
         if ($user !== false) {
 
-            App::call()->session->setLogin($user);
+            App::call()->session->setUsername($user);
             App::call()->session->setUser_id($user);
 
             return true;
@@ -48,14 +48,14 @@ class UserRepository extends Repository
     }
 
     public function getName() {
-        return App::call()->session->getLogin();
+        return App::call()->session->getUsername();
     }
 
-    public function authentication($login, $pass) {
-        $user = static::getOneWhere('login', $login);
+    public function authentication($username, $pass) {
+        $user = static::getOneWhere('username', $username);
         if (password_verify($pass, $user->pass)) {
 
-            App::call()->session->setLogin($user);
+            App::call()->session->setUsername($user);
             App::call()->session->setUser_id($user);
 
             return true;

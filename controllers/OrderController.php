@@ -12,19 +12,36 @@ class OrderController extends Controller
 {
     public function actionIndex()
     {
+        $orders = App::call()->orderRepository->getAllWhere('session_id', App::call()->session->getSession_id());
+
+        $params = [
+            'error' => false,
+            'orders' => $orders
+        ];
+
+        $this->runRender('orders', $params);
+    }
+
+    public function actionGetAll()
+    {
         if (!is_null(App::call()->session->getUser_id())) {
-            $orders = App::call()->orderRepository->getAllWhere('user_id', App::call()->session->getUser_id());
+            $orders = App::call()->orderRepository->getAllWhere(
+                'user_id', App::call()->session->getUser_id());
         } else {
-            // Все заказы текущщей сессии
-            $orders = App::call()->orderRepository->getAllWhere('session_id', App::call()->session->getSession_id());
+            $orders = App::call()->orderRepository->getAllWhere(
+                'session_id', App::call()->session->getSession_id());
         }
 
-        echo $this->render('orders', ['orders' => $orders]);
+        $params = [
+            'error' => false,
+            'orders' => $orders
+        ];
+
+        $this->runRender('orders', $params);
     }
 
     public function actionGet()
     {
-
         if (App::call()->userRepository->isAuth()) {
             $order = App::call()->orderRepository->getOneWhere('id', App::call()->request->getParams()['id']);
             $status = $order->status;

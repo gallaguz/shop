@@ -1,30 +1,203 @@
-let cartComponent = {
-    delimiters: ['${', '}'],
-    props: ['cart'],
-    template: '<ol>' +
-        '        <li' +
-        '                v-for="item in cart"' +
-        '                v-bind:item="item"' +
-        '                v-bind:key="item.product_id"' +
-        '        >${ item.title } - ${ item.price }</li>' +
-        '    </ol>'
+
+
+const ProductCard = {
+    props: ['item'],
+    template:
+        '<p>{{ item.title }}</p>'
 };
-const app = new Vue({
-    delimiters: ['${', '}'],
-    el: '#app',
-    components: {
-        'cart-component': cartComponent
+const LoginForm = {
+    props: ['auth', 'login'],
+    template:
+        '       <div v-if="auth">\n' +
+        '            <a href="/user/profile">Профиль: {{ login }}</a> | \n' +
+        '            <a href="/order/">История заказов</a> | \n' +
+        '            <a href="/user/logout/"> [Выход]</a>\n' +
+        '        </div>\n' +
+        '        <div v-else>\n' +
+        '            <form action="/user/login/" method="post">\n' +
+        '        <input type="text" name="login" placeholder="Логин">\n' +
+        '        <input type="text" name="pass" placeholder="Пароль">\n' +
+        '        Save? <input type=\'checkbox\' name=\'save\' value="save">\n' +
+        '        <input type="submit" name="submit" value="Войти">\n' +
+        '    </form>\n' +
+        '        </div>'
+};
+const CartIcon = {
+  props: ['cart', 'count'],
+  template:
+
+      '<span v-if="cart.length">' +
+      '         <img @click="toggleCart" \n' +
+      '             class="cartButton"\n' +
+      '             title="Показать/Скрыть корзину"\n' +
+      '             src="/icons/full.svg"\n' +
+      '             width="32"\n' +
+      '             height="32"\n' +
+      '             >\n' +
+      '{{ count }}' +
+      '</span>' +
+      '        <img v-else @click="toggleCart"\n' +
+      '             class="cartButton"\n' +
+      '             title="Показать/Скрыть корзину" \n' +
+      '             src="/icons/empty.svg" \n' +
+      '             width="32" height="32"\n' +
+      '        >',
+    methods: {
+        toggleCart() {
+            this.$emit('toggle-cart');
+        }
+    }
+};
+const CartItemComponent = {
+    props: ['id', 'title', 'count', 'price'],
+    template:
+        `<li>
+                <h3>{{title}}</h3>
+                <input class="count" type="number" :value="count" @input="handleQuantityChange" />
+                <button @click="handleDeleteClick">x</button> {{price}} x {{count}} = {{price * count}}
+        </li>`,
+    methods: {
+        handleQuantityChange(event) {
+            this.$emit('changed', { id: this.id, count: event.target.value });
+        },
+        handleDeleteClick() {
+            this.$emit('deleted', this.id);
+        }
+    }
+};
+const CartComponent = {
+    props: ['items'],
+    template:
+        `<div><h2>Корзина</h2>
+                <div class="cart">
+                  <ul>
+                    <cart-item
+                      v-for="item in items"
+                      :key="item.id"
+                      :title="item.title"
+                      :id="item.id"
+                      :count="item.count"
+                      :price="item.price"
+                      @changed="handleQuantityChange"
+                      @deleted="handleDelete"
+                    ></cart-item>
+                  </ul>
+                </div>
+                <div class="total">Общая стоимость товаров: {{total}} денег</div>
+              </div>`,
+    computed: {
+        total() {
+            return this.items.reduce((acc, item) => acc + item.count * item.price, 0);
+        },
     },
-    data: {
-        count: 0,
-        cart: []
+    components: {
+        'cart-item': CartItemComponent,
     },
     methods: {
-        getCart: function () {
-            fetch(`/cart/getCart/`, {
+        handleQuantityChange(item) {
+            this.$emit('changed', item);
+        },
+        handleDelete(id) {
+            this.$emit('deleted', id);
+        }
+    }
+};
+const ItemComponent = {
+    props: ['id', 'title', 'price', 'img'],
+    data: function ()
+    {
+        return {
+            url: '/product/card/?id=' + this.id
+        }
+    },
+    template:
+        `<p class="item">
+              <strong><a v-bind:href="url">{{ title }}</a>
+              <span @click="testFunc">open</span></strong><br>
+              <img width="100" :src="img" /><br>
+              <strong>Цена: {{price}}</strong><br>
+              <button class="buy" @click="handleBuyClick">Купить</button>
+            </p>`,
+    methods: {
+        handleBuyClick(id) {
+            this.$emit('buy', id);
+        },
+        testFunc(id) {
+            this.$emit('test-func', id);
+        }
+    }
+};
+const ItemsListComponent = {
+    props: ['items'],
+    data: function() {
+        return {
+            src: '/img/'
+        }
+    },
+    template:
+        `<div>
+                <h2>Каталог товаров</h2>
+                <item-component
+                  v-if="items.length"
+                  v-for="item in items"
+                  :key="item.id"
+                  :id="item.id"
+                  :title="item.title"
+                  :price="item.price"
+                  :img="src+item.img"
+                  @buy="handleBuyClick(item)"
+                  @test-func="testFunc(item)"
+                ></item-component>
+                <div v-if="!items.length">
+                Список товаров пуст
+              </div>
+             </div>`,
+    methods: {
+        handleBuyClick(item) {
+            this.$emit('buy', item);
+        },
+        testFunc(item){
+            this.$emit('test-func', item);
+        }
+    },
+    components: {
+        'item-component': ItemComponent,
+    },
+};
+const SearchComponent = {
+    template:
+        `<div>
+                <input type="text" v-model="query" v-on:keyup="handleSearchClick" /><button @click="handleSearchClick">Поиск</button>
+         </div>`,
+    data() {
+        return {
+            query: '',
+        }
+    },
+    methods: {
+        handleSearchClick() {
+            this.$emit('search', this.query);
+        }
+    }
+};
+
+const app = new Vue({
+    el: '#root',
+    data: {
+        auth: false,
+        login: '',
+        item: [],
+        items: [],
+        cart: [],
+        query: '',
+        isCartVisible: false,
+    },
+    methods: {
+        isAuth: function () {
+            fetch(`/user/api/`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    api: true
+                    param: 'isAuth'
                 }),
                 headers: {
                     'Content-type': 'application/json',
@@ -32,271 +205,215 @@ const app = new Vue({
             })
                 .then(res => res.json())
                 .then(res => {
-                    this.cart = res.cart;
+                    this.auth = res.auth;
+                    this.login = res.login;
                     console.log(res);
                 })
         },
-        getCount: function () {
-            fetch(`/cart/getCount/`, {
+        handleClickProduct(item) {
+            console.log(item);
+        },
+        testFunc(item) {
+            let id = item.id;
+            fetch(`/product/card/`, {
                 method: 'POST',
-                body: JSON.stringify({
-                    api: true
-                }),
+                body: JSON.stringify(
+                    {
+                        api: 'api',
+                        id: id
+                    }
+                ),
                 headers: {
                     'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
+                }
+            }).then(res => res.json())
                 .then(res => {
-                    this.count = res.count;
-                })
-        }
-    },
-    mounted () {
-        this.getCount();
-        //this.getCart();
-    },
-    computed: {
-        total() {
-            return this.cart.reduce((acc, item) => acc + item.count * item.price, 0);
-        }
-    }
-});
-
-
-function deleteProduct(id)
-{
-    (
-        async () => {
-            const response = await fetch('/cart/delete/', {
+                    this.item = res.product;
+                });
+        },
+        // Добавление товара в корзину
+        handleBuyClick(item) {
+            const cartItem = this.cart.find((cartItem) => +cartItem.id === +item.id);
+            fetch(`/cart/add/`, {
                 method: 'POST',
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
-                body: JSON.stringify({
-                    api: true,
-                    id: id
-                })
-            });
-            const answer = await response.json();
-            document.getElementById('count').innerText = answer.count;
-            document.getElementById('item_' + id).remove();
-        }
-    )();
-}
-
-let by = document.querySelectorAll('.buy');
-by.forEach((elem) => {
-    elem.addEventListener('click', () => {
-        console.log('click');
-
-        let id = elem.getAttribute('data-id');
-        let price = elem.getAttribute('data-price');
-        (
-            async () => {
-                const response = await fetch('/cart/add/', {
-                    method: 'POST',
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    }),
-                    body: JSON.stringify({
-                        api: true,
-                        id: id,
-                        price: price
-                    })
+                body: JSON.stringify(
+                    {
+                        api: 'api',
+                        id: item.id
+                    }
+                ),
+                headers: {
+                    'Content-type': 'application/json',
+                }
+            }).then(res => res.json())
+                .then(res => {
+                    if (cartItem) {
+                        cartItem.count++;
+                    } else {
+                        this.cart.push(
+                            {
+                                ...item, count: 1
+                            }
+                        );
+                    }
+                    console.log(res);
                 });
-                const answer = await response.json();
-                document.getElementById('count').innerText = answer.count;
-            }
-        )();
-    })
-});
+        },
 
-let count = document.querySelectorAll('.itemCount');
+        // Изменение количества и удаление
+        handleDeleteClick(id) {
+            const cartItem = this.cart.find((cartItem) => +cartItem.id === +id);
 
-count.forEach((elem) => {
-    elem.addEventListener('change', () => {
-        let id = elem.getAttribute('data-id');
-        let count = elem.value;
-        (
-            async () => {
-                const response = await fetch('/cart/UpdateCount/', {
+            if (cartItem && cartItem.count > 1) {
+                fetch(`/cart/update/`, {
                     method: 'POST',
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    }),
-                    body: JSON.stringify({
-                        id: id,
-                        count: count
+                    body: JSON.stringify(
+                        {
+                            api: 'api',
+                            id: id,
+                            count: cartItem.count - 1
+                        }
+                    ),
+                    headers: {
+                        'Content-type': 'application/json',
+                    }
+                }).then(res => res.json())
+                    .then(res => {
+                        cartItem.count--;
+                        console.log(res);
+                    });
+            } else {
+                if (confirm('Вы действительно хотите удалить последний товар?')) {
+                    fetch(`/cart/delete/`, {
+                        method: 'POST',
+                        body: JSON.stringify(
+                            {
+                                api: 'api',
+                                id: id
+                            }
+                        ),
+                        headers: {
+                            'Content-type': 'application/json',
+                        }
                     })
-                });
-                const answer = await response.json();
-
-                if (answer.count <= 0) {
-                    deleteProduct(id);
-                } else {
-                    elem.value = answer.count;
+                        .then(res => res.json())
+                        .then(res => {
+                            this.cart = this.cart.filter((item) => item.id !== id);
+                        });
                 }
             }
-        )();
-    })
+        },
+
+        // Изменение количества товара
+        handleCartChange(item) {
+            const cartItem = this.cart.find((cartItem) => +cartItem.id === +item.id);
+            cartItem.count = item.count;
+
+            if (cartItem && item.count < 1) {
+                if (confirm('Вы действительно хотите удалить последний товар?')) {
+                    this.cart = this.cart.filter((itemInCart) => itemInCart.id !== item.id);
+                    fetch(`/cart/delete/`, {
+                        method: 'POST',
+                        body: JSON.stringify(
+                            {
+                                api: 'api',
+                                id: item.id
+                            }
+                        ),
+                        headers: {
+                            'Content-type': 'application/json',
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(res => {
+                            console.log(res);
+                        });
+                }
+            } else {
+                fetch(`/cart/update/`, {
+                    method: 'POST',
+                    body: JSON.stringify(
+                        {
+                            api: 'api',
+                            id: item.id,
+                            count: item.count
+                        }
+                    ),
+                    headers: {
+                        'Content-type': 'application/json',
+                    }
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        console.log(res);
+                    });
+            }
+        },
+
+        // Показать / Скрыть корзину
+        toggleCart() {
+            this.isCartVisible = !this.isCartVisible;
+        },
+
+        // Поиск товара
+        onQueryChanged(query) {
+            this.query = query;
+        }
+    },
+    mounted() {
+        this.isAuth();
+
+        fetch(`/product/get/`, {
+            method: 'POST',
+            body: JSON.stringify(
+                {
+                    api: 'api'
+                }
+            ),
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+            .then(res => res.json())
+            .then(res => {
+                this.items = res.catalog;
+            });
+
+        fetch(`/cart/get/`, {
+            method: 'POST',
+            body: JSON.stringify(
+                {
+                    api: 'api'
+                }
+            ),
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+            .then(res => res.json())
+            .then(res => {
+                this.cart = res.cart;
+            });
+
+    },
+    computed: {
+        filteredItems() {
+            return this.items.filter((item) => {
+                const regexp = new RegExp(this.query, 'i');
+
+                return regexp.test(item.title);
+            });
+        },
+        count() {
+            return this.cart.reduce((acc, item) => acc + item.count, 0);
+        }
+    },
+    components: {
+        'login-form': LoginForm,
+        'cart-icon': CartIcon,
+        'items-list-component': ItemsListComponent,
+        'search-component': SearchComponent,
+        'cart-component': CartComponent,
+        'product-card': ProductCard
+    },
 });
-
-let buttons = document.querySelectorAll('.delete');
-buttons.forEach((elem) => {
-    elem.addEventListener('click', () => {
-        let id = elem.getAttribute('data-id');
-        deleteProduct(id);
-    })
-});
-
-
-let showAddOrderFlag = false;
-let showAddOrder = document.getElementById('showAddOrder')
-showAddOrder.addEventListener('click', () => {
-    if (showAddOrderFlag === false) {
-        document.getElementById('addOrder').innerHTML =
-            '<b>Оформление заказа:</b>\n' +
-            '\n' +
-            '        <form action="/order/add" method="post">\n' +
-            '            <input type="text" name="name" placeholder="Имя"><br>\n' +
-            '            <input type="text" name="phone" placeholder="Телефон"><br>\n' +
-            '            <input type="hidden" name="id" value="{{ session_id }}">\n' +
-            '            <input type="submit" name="addOrder" value="Отправить">\n' +
-            '        </form>';
-        showAddOrder.setAttribute('value', 'Оформить позже');
-        showAddOrderFlag = true;
-    } else {
-        showAddOrder.setAttribute('value', 'Оформить заказ');
-        document.getElementById('addOrder').innerHTML = '';
-        showAddOrderFlag = false;
-    }
-})
-
-
-// let BasketComponent = {
-//     data: function() {
-//         return {
-//             items: [],
-//             count: 0,
-//             total: 0
-//         }
-//     },
-//     props: ['test'],
-//     methods: {
-//         getBasket()
-//         {
-//             (
-//                 async () => {
-//                     const response = await fetch('/cart/GetCart/', {
-//                         method: 'POST',
-//                         headers: new Headers({
-//                             'Content-Type': 'application/json'
-//                         })
-//                     });
-//                     const answer = await response.json();
-//                     this.items = answer['basket'];
-//                     console.log(this.items);
-//                 }
-//             )();
-//         }
-//     },
-//     mounted () {
-//         this.getBasket();
-//     },
-//     template:
-//         '<ol>' +
-//         '   <li v-for="item in items">' +
-//         '       <h3>{{ item.name }}</h3>' +
-//         '       <p>Описание: {{ item.description }}</p>' +
-//         '       <p>Цена: {{ item.price }}</p>' +
-//         '       <input class="itemCount" type="number" value=":item.count">{{ item.count }}' +
-//         '       <button class="delete">Удалить</button>' +
-//         '   </li>' +
-//         '</ol>'
-// };
-//
-// let BasketProductItem = {
-//     props: ['basket_id', 'product_id', 'name', 'description', 'price', 'count'],
-//
-// };
-//
-// const app = new Vue({
-//     el: '#app',
-//     components: {
-//         'basket-component': BasketComponent
-//         //'auth-buttons': AuthButtonComponent,
-//         //'create-buttons': CreateButtonComponent
-//     },
-//     data: {
-//         id: '',
-//         price: '',
-//         test2: 'test 2',
-//         auth: false
-//     },
-//     methods: {
-//         buy: function()
-//         {
-//
-//         },
-//         logIn: function()
-//         {
-//             fetch('api.php?auth=login')
-//                 .then(res => res.json())
-//                 .then(res => {
-//                     if (res) {
-//                         this.auth = true;
-//                         this.text = 'Logged in';
-//                     } else {
-//                         this.auth = false;
-//                         this.text = 'Login error';
-//                     }
-//                 });
-//         },
-//         test: function()
-//         {
-//             console.log ('App has been mounted');
-//         }
-//     },
-//     mounted () {
-//         //this.test();
-//     }
-// });
-// <hr>
-// <auth-buttons
-// v-bind:text="text"
-// v-bind:auth="auth"
-// @log-in="logIn"
-// @log-out="logOut"
-// @is-auth="isAuth">
-//     </auth-buttons>
-
-// let AuthButtonComponent = {
-//     props: ['text', 'auth'],
-//     template:
-//         '<div>{{ text }}' +
-//         '<button v-if="auth === false" @click="$emit(\'log-in\')">Login</button>' +
-//         '<button v-if="auth" @click="$emit(\'log-out\')">Logout</button>' +
-//         '<button @click="$emit(\'is-auth\')">isAuth</button>' +
-//         '</div>'
-// };
-//
-// let CreateButtonComponent = {
-//     template:
-//         '<div>' +
-//         'Create<br>' +
-//         '<button @click="$emit(\'create-product\')">Product</button>' +
-//         '<button @click="$emit(\'create-type\')">Type</button>' +
-//         '<button @click="$emit(\'create-category\')">Category"</button>' +
-//         '<button @click="$emit(\'create-brand\')">Brand"</button>' +
-//         '</div>'
-// };
-// <create-buttons
-//     @create-product="createProduct"
-//     @create-type="createType"
-//     @create-category="createCategory"
-//     @create-brand="createBrand">
-//     </create-buttons>
-
-
-

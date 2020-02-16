@@ -1,0 +1,37 @@
+    <main>
+
+
+
+        <login-form :auth="auth" :login="login"></login-form>
+        <hr>
+        <a href="/">Главная</a>
+        <a href="/product/catalog/">Каталог</a>
+
+        <cart-icon :cart="cart" :count="count" @toggle-cart="toggleCart"></cart-icon>
+        <hr>
+
+        <search-component @search="onQueryChanged"></search-component>
+        <hr>
+
+
+        <product-card :item="item"></product-card>
+
+
+        <div v-if="isCartVisible === false">
+            <items-list-component
+                    :items="filteredItems"
+                    @buy="handleBuyClick"
+                    @test-func="testFunc">
+            </items-list-component>
+        </div>
+
+        <div v-if="isCartVisible">
+            <cart-component
+                    :items="cart"
+                    @changed="handleCartChange"
+                    @deleted="handleDeleteClick">
+            </cart-component>
+        </div>
+
+
+    </main>

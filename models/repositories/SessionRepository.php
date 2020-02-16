@@ -12,7 +12,7 @@ class SessionRepository extends Repository
 {
     public function saveSession($user)
     {
-        App::call()->session->setLogin($user);
+        App::call()->session->setUsername($user);
         App::call()->session->setUser_id($user);
 
         $session = new SessionEntity(App::call()->session->getSession_id(), App::call()->session->getUser_id());

@@ -9,20 +9,20 @@ use app\models\Entity;
 class UserEntity extends Entity
 {
     protected $id;
-    protected $login;
-    protected $pass;
+    protected $username;
+    protected $password;
     protected $hash;
 
     protected $props = [
-        'login' => false,
-        'pass' => false,
+        'username' => false,
+        'password' => false,
         'hash' => false
     ];
 
-    public function __construct($login = null, $pass = null, $hash = null)
+    public function __construct($username = null, $password = null, $hash = null)
     {
-        $this->login = $login;
-        $this->pass = $pass;
+        $this->username = $username;
+        $this->password = $password;
         $this->hash = $hash;
     }
 }

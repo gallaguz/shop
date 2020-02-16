@@ -8,31 +8,41 @@ use app\interfaces\IRenderer;
 
 abstract class Controller
 {
+    private $api;
     private $action;
     private $defaultAction = 'index';
     private $layout = 'main';
     private $useLayout = true;
     private $renderer;
 
-
     public function __construct(IRenderer $renderer)
     {
         $this->renderer = $renderer;
     }
 
-    public function runAction($action = null)
+    public function isApi()
     {
-        $this->action = $action ?: $this->defaultAction;
-        $method = "action" . ucfirst($this->action);
-        if (method_exists($this, $method)) {
-            $this->$method();
+        return $this->api;
+    }
+
+    public function runRender($template, $params)
+    {
+        if ($this->isApi()) {
+            header('Content-Type: application/json');
+            echo json_encode($params);
+        } else {
+            echo $this->render($template, $params);
         }
     }
 
-    public function apiJson($params)
+    public function runAction($action = null, $api = null)
     {
-        header('Content-Type: application/json');
-        echo json_encode($params);
+        $this->api = $api;
+        $this->action = $action ?: $this->defaultAction;
+        $method = "action" . ucfirst($this->action);
+        if (method_exists($this, $method)) {
+            $this->$method($api);
+        }
     }
 
     public function render($template, $params = []) {

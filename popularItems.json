@@ -1,0 +1,50 @@
+[
+  {
+    "id_product": 333,
+    "product_name": "t-shirt",
+    "price": 10,
+    "imgSrc": "img/Layer_main10.jpg"
+  },
+  {
+    "id_product": 421,
+    "product_name": "blouse",
+    "price": 14,
+    "imgSrc": "img/Layer_main11.jpg"
+  },
+  {
+    "id_product": 543,
+    "product_name": "jacket",
+    "price": 75,
+    "imgSrc": "img/Layer_main3.jpg"
+  },
+  {
+    "id_product": 56,
+    "product_name": "dress",
+    "price": 30,
+    "imgSrc": "img/Layer_main12.jpg"
+  },
+  {
+    "id_product": 670,
+    "product_name": "dress",
+    "price": 20,
+    "imgSrc": "img/Layer_main13.jpg"
+  },
+  {
+    "id_product": 669,
+    "product_name": "costume",
+    "price": 119,
+    "imgSrc": "img/Layer_main7.jpg"
+  },
+  {
+    "id_product": 404,
+    "product_name": "Trousers",
+    "price": 15,
+    "imgSrc": "img/Layer_main14.jpg"
+  },
+  {
+    "id_product": 124,
+    "product_name": "blouse",
+    "price": 52,
+    "imgSrc": "img/Layer_main5.jpg"
+  }
+]

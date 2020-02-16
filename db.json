@@ -1,0 +1,111 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Vasya Pupkin",
+      "age": 40
+    },
+    {
+      "id": 2,
+      "name": "Kolya Pupkin",
+      "age": 41
+    },
+    {
+      "id": 3,
+      "name": "Vanya Pupkin",
+      "age": 42
+    },
+    {
+      "id": 4,
+      "name": "Igor Pupkin",
+      "age": 40
+    }
+  ],
+  "goods": [
+    {
+      "id": 1,
+      "title": "MANGO PEOPLE T-SHORT",
+      "price": 52,
+      "img": "/img/Image-8.png"
+    },
+    {
+      "id": 2,
+      "title": "MANGO PEOPLE SHORT",
+      "price": 61,
+      "img": "/img/Image-7.png"
+    },
+    {
+      "id": 3,
+      "title": "MANGO PEOPLE T",
+      "price": 102,
+      "img": "/img/Image-6.png"
+    },
+    {
+      "id": 4,
+      "title": "MANGO",
+      "price": 95,
+      "img": "/img/Image-5.png"
+    },
+    {
+      "id": 5,
+      "title": "PEOPLE",
+      "price": 43,
+      "img": "/img/Image-4.png"
+    },
+    {
+      "id": 6,
+      "title": "MP",
+      "price": 111,
+      "img": "/img/Image-3.png"
+    },
+    {
+      "id": 7,
+      "title": "OE",
+      "price": 28,
+      "img": "/img/Image-2.png"
+    },
+    {
+      "id": 8,
+      "title": "MANPLE",
+      "price": 9,
+      "img": "/img/Image-1.png"
+    }
+  ],
+  "cart": [
+    {
+      "id": 1,
+      "title": "MANGO PEOPLE T-SHORT",
+      "price": 52,
+      "img": "/img/Image-8.png",
+      "qty": 2
+    },
+    {
+      "id": 2,
+      "title": "MANGO PEOPLE SHORT",
+      "price": 61,
+      "img": "/img/Image-7.png",
+      "qty": 3
+    },
+    {
+      "id": 7,
+      "title": "OE",
+      "price": 28,
+      "img": "/img/Image-2.png",
+      "qty": 6
+    },
+    {
+      "id": 8,
+      "title": "MANPLE",
+      "price": 9,
+      "img": "/img/Image-1.png",
+      "qty": 1
+    },
+    {
+      "id": 5,
+      "title": "PEOPLE",
+      "price": 43,
+      "img": "/img/Image-4.png",
+      "qty": 1
+    }
+  ]
+}

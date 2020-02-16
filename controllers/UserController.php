@@ -8,30 +8,56 @@ use app\models\entities\SessionEntity;
 
 class UserController extends Controller
 {
-    public function actionLogin() {
+    public function actionGetProfile()
+    {
+        $params = [
+            'error' => false,
+            'auth' => !is_null(App::call()->session->getUsername()),
+            'username' => App::call()->session->getUsername(),
+            'user_id' => App::call()->session->getUser_id(),
+            'phone' => '+12345678900',
+            'email' => 'email@email.com'
+        ];
+        $this->runRender('error', [ 'profile' => $params ]);
+    }
 
-        $login = App::call()->request->getParams()['login'];
-        $pass = App::call()->request->getParams()['pass'];
+    public function actionLogin()
+    {
+        $username = App::call()->request->getParams()['username'];
+        $password = App::call()->request->getParams()['password'];
 
-        if (App::call()->validate->loginPass($login, $pass)) {
-            if (App::call()->userRepository->authentication($login, $pass)) {
+        if (App::call()->validate->loginPass($username, $password)) {
+            if (App::call()->userRepository->authentication($username, $password)) {
 
-                $user = App::call()->userRepository->getOneWhere('login', $login);
+                $user = App::call()->userRepository->getOneWhere('username', $username);
 
                 App::call()->userRepository->saveVisit($user);
                 App::call()->sessionRepository->saveSession($user);
 
-                header("Location: " . $_SERVER['HTTP_REFERER']);
+                if ($this->isApi()) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'error' => false,
+                        'username' => App::call()->session->getUsername()]);
+                } else {
+                    header("Location: " . $_SERVER['HTTP_REFERER']);
+                }
             } else {
-                echo $this->render('error', ['error' => 'Неверный логин или пароль']);
+                $params = [
+                    'error' => 'Неверный логин или пароль'
+                ];
+                $this->runRender('error', $params);
             };
         } else {
-            echo $this->render('error', ['error' => 'Неверный формат ввода']);
+            $params = [
+                'error' => 'Неверный формат ввода'
+            ];
+            $this->runRender('error', $params);
         }
     }
 
     public function actionLogout() {
-        $user = App::call()->userRepository->getOneWhere('login', App::call()->session->getLogin());
+        $user = App::call()->userRepository->getOneWhere('username', App::call()->session->getUsername());
 
         if ($user) {
             $user->hash = '';
@@ -43,8 +69,13 @@ class UserController extends Controller
         App::call()->session->newSession();
 
         setcookie("hash", '', time() - 60*60*24*7, "/");
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-        exit();
+
+        if ($this->isApi()) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => false]);
+        } else {
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+        }
     }
 
 }

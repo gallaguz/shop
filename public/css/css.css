@@ -1,0 +1,6 @@
+.cartButton {
+    margin: 5px;
+}
+.cartButton:hover {
+    cursor: pointer;
+}

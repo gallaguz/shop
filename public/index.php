@@ -4,9 +4,13 @@ session_start();
 use app\engine\App;
 
 $config = include __DIR__ . "/../config/config.php";
+include __DIR__ . "/../engine/log.php";
+
 include realpath("../vendor/Autoload.php");
 
 try {
+    _log('start App');
+
     App::call()->run($config);
 } catch (\Exception $e) {
     //var_dump('some error');

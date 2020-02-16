@@ -7,6 +7,14 @@
 use app\engine\Request;
 use app\engine\Session;
 use app\engine\Validate;
+
+use app\controllers\AdminController;
+use app\controllers\ApiController;
+use app\controllers\CartController;
+use app\controllers\OrderController;
+use app\controllers\ProductController;
+use app\controllers\UserController;
+
 use app\models\repositories\SessionRepository;
 use app\models\repositories\CartRepository;
 use app\models\repositories\OrderRepository;
@@ -37,6 +45,27 @@ return [
         'validate' => [
             'class' => Validate::class
         ]
+    ],
+    'controller' => [
+        'adminController' => [
+            'class' => AdminController::class
+        ],
+        'apiController' => [
+            'class' => ApiController::class
+        ],
+        'cartController' => [
+            'class' => CartController::class
+        ],
+        'orderController' => [
+            'class' => OrderController::class
+        ],
+        'productController' => [
+            'class' => ProductController::class
+        ],
+        'userController' => [
+            'class' => UserController::class
+        ]
+
     ],
     'repository' => [
         'sessionRepository' => [

@@ -9,57 +9,94 @@ use app\models\entities\CartEntity;
 
 class ApiController extends Controller
 {
-    public function actionTest()
+    public function actionIndex()
     {
-        $data = json_decode(file_get_contents('php://input'));
-        $arr = [];
-        if (!is_null($data)) {
-            foreach ($data as $key => $elem) {
-                $arr[$key] = $elem;
-            }
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode([
-            ['id' => 0, 'text' => 'text1'],
-            ['id' => 1, 'text' => 'text2'],
-            ['id' => 2, 'text' => 'text3'],
-            ['id' => 3, 'text' => $arr['qty']]
+        $params = [
+            'error' => false,
+            'content' => 'Welcome to ShopAPI'
+        ];
+        _log([
+            'dir' => __DIR__,
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'class' => get_called_class(),
+            'method'=> __METHOD__,
+            'params' => $params
         ]);
-    }
-    public function actionGetCountItemsInCart()
-    {
-        $session_id = App::call()->session->getSession_id();
-        $count = App::call()->cartRepository->getCountWhere('session_id', $session_id);
-
         header('Content-Type: application/json');
-        echo json_encode($count);
-        die();
+        echo json_encode($params);
+    }
+
+    public function actionProduct()
+    {
+        $action = App::call()->request->getParams()['action'];
+        _log([
+            'dir' => __DIR__,
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'class' => get_called_class(),
+            'method'=> __METHOD__,
+            'comment' => '',
+            'params' => [
+                'controller' => 'product',
+                'action' => $action,
+                'api' => 'true'
+            ]
+        ]);
+        App::call()->runController('product', $action, true);
     }
     public function actionCart()
     {
-        $cart = App::call()->cartRepository->getCart(App::call()->session->getSession_id());
-        header('Content-Type: application/json');
-        echo json_encode($cart);
-//
-//        header('Content-Type: application/json');
-//        echo json_encode([
-//            ['id' => 0, 'title' => 'Мясо', 'price' => 100, 'qty' => 1],
-//            ['id' => 1, 'title' => 'Сосиски', 'price' => 200, 'qty' => 2],
-//            ['id' => 2, 'title' => 'Хлеб', 'price' => 300, 'qty' => 3],
-//            ['id' => 3, 'title' => 'Сало', 'price' => 400, 'qty' => 4]
-//        ]);
-    }
-    public function actionGoods()
-    {
-        header('Content-Type: application/json');
-        echo json_encode([
-            ['id' => 0, 'title' => 'Мясо', 'price' => 100, 'img' => ''],
-            ['id' => 1, 'title' => 'Сосиски', 'price' => 200, 'img' => ''],
-            ['id' => 2, 'title' => 'Хлеб', 'price' => 300, 'img' => ''],
-            ['id' => 3, 'title' => 'Сало', 'price' => 400, 'img' => '']
+        $action = App::call()->request->getParams()['action'];
+        _log([
+            'dir' => __DIR__,
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'class' => get_called_class(),
+            'method'=> __METHOD__,
+            'comment' => '',
+            'params' => [
+                'controller' => 'cart',
+                'action' => $action,
+                'api' => 'true'
+            ]
         ]);
+        App::call()->runController('cart', $action, true);
     }
-
-
+    public function actionOrder()
+    {
+        $action = App::call()->request->getParams()['action'];
+        _log([
+            'dir' => __DIR__,
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'class' => get_called_class(),
+            'method'=> __METHOD__,
+            'comment' => '',
+            'params' => [
+                'controller' => 'order',
+                'action' => $action,
+                'api' => 'true'
+            ]
+        ]);
+        App::call()->runController('order', $action, true);
+    }
+    public function actionUser()
+    {
+        $action = App::call()->request->getParams()['action'];
+        _log([
+            'dir' => __DIR__,
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'class' => get_called_class(),
+            'method'=> __METHOD__,
+            'comment' => '',
+            'params' => [
+                'controller' => 'user',
+                'action' => $action,
+                'api' => 'true'
+            ]
+        ]);
+        App::call()->runController('user', $action, true);
+    }
 }

@@ -14,6 +14,10 @@ trait Tsingletone
         if (is_null(static::$instance)) {
             static::$instance = new static();
         }
+        _log([
+            'class' => get_called_class(),
+            'method'=> __METHOD__
+        ]);
         return static::$instance;
     }
 }

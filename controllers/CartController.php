@@ -8,57 +8,47 @@ use app\engine\App;
 
 use app\models\entities\CartEntity;
 use app\models\repositories\CartRepository;
-use mysql_xdevapi\Exception;
 
 class CartController extends Controller
 {
     public function actionIndex()
     {
-        $session_id = App::call()->session->getSession_id();
-        $order = App::call()->orderRepository->getOneWhere('session_id', App::call()->session->getSession_id());
-        $status = $order->status;
-
-        $cart = App::call()->cartRepository->getCart($session_id);
-        $count = App::call()->cartRepository->getCountWhere('session_id', $session_id);
-
-        echo $this->render('cart', ['products' => $cart, 'status' => $status,
-            'count' => $count, 'session_id' => App::call()->session->getSession_id()]);
+        $this->actionGet();
     }
 
-    public function actionGetCart()
+    public function actionGet()
     {
-        $cart = App::call()->cartRepository->getCart(App::call()->session->getSession_id());
-        header('Content-Type: application/json');
-        echo json_encode(['cart' => $cart]);
-    }
+        $id = App::call()->request->getParams()['id'];
 
-    public function actionGetCount()
-    {
-        $count = App::call()->cartRepository->getCountWhere('session_id', App::call()->session->getSession_id());
-        header('Content-Type: application/json');
-        echo json_encode(['count' => $count]);
+        if (!is_null($id)) {
+            $cart = App::call()->cartRepository->getOne($id);
+        } else {
+            $cart = App::call()->cartRepository->getCart();
+        }
+
+        $params = [
+            'error' => false,
+            'cart' => $cart
+        ];
+
+        $this->runRender('cart', $params);
     }
 
     public function actionDelete()
     {
         $id = App::call()->request->getParams()['id'];
-        $cart = App::call()->cartRepository->getOne($id);
+        $cart = App::call()->cartRepository->getOneWhereAnd('session_id', App::call()->session->getSession_id(), 'product_id', $id);
 
-        $session_id = App::call()->session->getSession_id();
-
-        if ($session_id == $cart->session_id) {
+        if ($cart) {
             App::call()->cartRepository->delete($cart);
         }
 
-        if (App::call()->request->getParams()['api']) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'ok', 'id' => $id, 'count' => App::call()->cartRepository->getCountWhere('session_id',
-                $session_id)]);
-        } else {
-            echo 'Товар удалён из корзины.';
-            //echo $this->render('cart', ['error' => 'Что-то пошло не так']);
-        }
+        $params = [
+            'status' => 'ok',
+            'msg' => 'deleted'
+        ];
 
+        $this->runRender('cart', $params);
     }
 
     public function actionAdd()
@@ -81,33 +71,45 @@ class CartController extends Controller
                                     App::call()->productRepository->getOne($product_id)->price,
                                     1);
         }
-
         // Сохраняем корзину
         App::call()->cartRepository->save($cart);
 
-        // Если запрос был асинхронным, выводим json
-        if (App::call()->request->getParams()['api']) {
-            $this->apiJson(
-                ['status' => 'ok',
-                    'count' => App::call()->cartRepository->getCountWhere('session_id', $session_id)]
-            );
-        }
-        // А если нет, то я не придумал ещё)
+        $params = [
+            'status' => 'ok',
+            'msg' => 'added'
+        ];
+
+        $this->runRender('cart', $params);
     }
 
-    public function actionUpdateCount()
+    public function actionUpdate()
     {
-        $cart_id = App::call()->request->getParams()['id'];
+        $product_id = App::call()->request->getParams()['id'];
+        $count = App::call()->request->getParams()['count'];
 
-        $cart = App::call()->cartRepository->getOne($cart_id);
+        $cart = App::call()->cartRepository->getOneWhereAnd
+        (
+            'session_id',
+            App::call()->session->getSession_id(),
+            'product_id',
+            $product_id
+        );
+
         if ($cart){
-            $count = App::call()->request->getParams()['count'];
-            $cart->count = (is_null($count))? $cart->count + 1 : $count;
-            App::call()->cartRepository->save($cart);
-
-            if (App::call()->request->getParams()['api']) {
-                $this->apiJson(['status' => 'ok', 'count' => $cart->count]);
+            if (!is_null($count) && $count > 0) {
+                $cart->count = $count;
+                App::call()->cartRepository->save($cart);
+            } else {
+                $this->actionDelete();
+                exit();
             }
+
+            $params = [
+                'status' => 'ok',
+                'msg' => 'updated'
+            ];
+
+            $this->runRender('cart', $params);
         }
     }
 }

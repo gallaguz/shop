@@ -43,6 +43,13 @@ abstract class Repository implements IModel
         return App::call()->db->queryObject($sql, ['id' => $id], $this->getEntityClass());
 
     }
+    public function getOneArr($id)
+    {
+        $tableName = $this->getTableName();
+        $sql = "SELECT * FROM {$tableName} WHERE id = :id";
+        return App::call()->db->queryOne($sql, ['id' => $id], $this->getEntityClass());
+
+    }
 
     public function getAll()
     {

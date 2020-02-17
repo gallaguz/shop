@@ -101,8 +101,6 @@
 </template>
 
 <script>
-
-
     export default {
         name: "AdminPage",
         data: function () {

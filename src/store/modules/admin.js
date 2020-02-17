@@ -1,9 +1,29 @@
+import Axios from "axios";
+
 export default {
     state: {
         orders: []
     },
     actions: {
-        getApiOrdersAdmin ({ commit }) {
+        updateApiOrders({commit, state}, {
+            status: status,
+            order_id: order_id
+        }) {
+            Axios.post(
+                '/api/order/',
+                {
+                    action: 'update',
+                    status: status,
+                    id: order_id
+                }
+            ).then((response) => {
+                commit('updateOrder', {
+                    status: status,
+                    order_id: order_id
+                });
+            });
+        },
+        getApiOrdersAdmin({commit}) {
             fetch('/api/order/', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -22,7 +42,15 @@ export default {
 
     },
     mutations: {
-        setOrdersAdmin (state, orders) {
+        updateOrder(state, {
+            order_id: order_id,
+            status: status
+        }) {
+            const order = state.orders.find((order) =>
+                +order.id === +order_id);
+            order.status = status;
+        },
+        setOrdersAdmin(state, orders) {
             state.orders = orders;
         }
     },

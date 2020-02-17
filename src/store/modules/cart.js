@@ -122,7 +122,6 @@ export default {
         },
     },
     getters: {
-
         getCart(state) {
             return state.cart
         },

@@ -1,6 +1,9 @@
 <template>
     <div>
-        <span class="showDetailsLink" @click="showDetails">Дата: {{ item.date }}</span>
+        <span
+                class="showDetailsLink"
+                @click="showDetails">
+            Дата: {{ item.date }} / Статус: {{ item.status }}</span>
         <div>
             <OrderItemDetails
                     :id="item.id"

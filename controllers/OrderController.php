@@ -87,4 +87,17 @@ class OrderController extends Controller
 
         $this->runRender('orderComplete', $params);
     }
+
+    public function actionUpdate() {
+        $order = App::call()->orderRepository->getOneWhere(
+            'id', App::call()->request->getParams()['id']);
+        $order->status = App::call()->request->getParams()['status'];
+        App::call()->orderRepository->save($order);
+
+        $params = [
+            'error' => false
+        ];
+
+        $this->runRender('orderUpdate', $params);
+    }
 }

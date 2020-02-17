@@ -2,7 +2,7 @@
     <div>
         Корзина:
         <hr>
-        <CartItem
+        <CartItem v-if="getStoreCart.length"
                 v-for="item in getStoreCart"
                 :key="item.id"
                 :item="item"
@@ -12,7 +12,7 @@
         <hr>
         Всего: {{ total }} денег
         <hr>
-        <AddOrder />
+        <AddOrder v-if="count > 0"/>
     </div>
 </template>
 

@@ -81,6 +81,10 @@ class OrderController extends Controller
 
         App::call()->session->regenerateSession_id();
 
-        echo $this->render('orderComplete');
+        $params = [
+            'error' => false
+        ];
+
+        $this->runRender('orderComplete', $params);
     }
 }

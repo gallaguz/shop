@@ -5,6 +5,24 @@ export default {
         cart: []
     },
     actions: {
+        addOrder ({commit}, {
+            name: name,
+            phone: phone
+        }) {
+            Axios.post(
+                '/api/order/',
+                {
+                    action: 'add',
+                    name: name,
+                    phone: phone
+                }
+            ).then((response) => {
+                if (response.data.error === false) {
+                    commit('clearCart');
+                }
+                console.log('Заказ оформлен');
+            });
+        },
         getApiCart({commit}) {
             Axios.post(
                 '/api/cart/',
@@ -90,6 +108,9 @@ export default {
         }
     },
     mutations: {
+        clearCart(state) {
+            state.cart = [];
+        },
         setCart(state, cart) {
             state.cart = cart;
         },
@@ -101,6 +122,7 @@ export default {
         },
     },
     getters: {
+
         getCart(state) {
             return state.cart
         },

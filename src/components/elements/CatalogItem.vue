@@ -9,13 +9,13 @@
              v-if="descriptionSeen"
              class="catalogItemImg"
              width="300"
-             :src="src"
+             :src="big"
         />
         <img @click="descriptionSeen = !descriptionSeen"
              v-else
              class="catalogItemImg"
              width="100"
-             :src="src"
+             :src="small"
         />
 
         <div v-if="descriptionSeen">
@@ -41,7 +41,8 @@
         props: ['item'],
         data: function () {
             return {
-                src: '/img/' + this.item.img,
+                small: '/img/small/' + this.item.img,
+                big: '/img/big/' + this.item.img,
                 descriptionSeen: false
             }
         },

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Axios from 'axios'
-import VueAxios from 'vue-axios'
+import Axios from 'axios';
+import VueAxios from 'vue-axios';
 import VTooltip from 'v-tooltip';
 
 Vue.use(VueAxios, Axios);

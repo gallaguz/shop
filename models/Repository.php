@@ -89,6 +89,9 @@ abstract class Repository implements IModel
 
         $sql = "INSERT INTO `{$tableName}`({$columns}) VALUES ({$values})";
 
+//        var_dump($sql, $params);
+//        die();
+
         App::call()->db->execute($sql, $params);
 
         $entity->id = App::call()->db->lastInsertId();

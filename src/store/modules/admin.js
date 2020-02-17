@@ -5,6 +5,21 @@ export default {
         orders: []
     },
     actions: {
+        addProduct({commit}, formData) {
+            Axios.post('/api/product',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            ).then(function () {
+                console.log('SUCCESS!!');
+            })
+                .catch(function () {
+                    console.log('FAILURE!!');
+                });
+        },
         updateApiOrders({commit, state}, {
             status: status,
             order_id: order_id

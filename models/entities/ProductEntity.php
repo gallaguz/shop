@@ -12,20 +12,23 @@ class ProductEntity extends Entity
     protected $title;
     protected $description;
     protected $price;
-    protected $image;
+    protected $img;
 
     protected $props = [
         'title' => false,
         'description' => false,
         'price' => false,
-        'image' => false
+        'img' => false
     ];
 
-    public function __construct($title = null, $description = null, $price = null, $image = null)
+    public function __construct($title = null,
+                                $description = null,
+                                $price = null,
+                                $img = null)
     {
         $this->title = $title;
         $this->description = $description;
         $this->price = $price;
-        $this->image = $image;
+        $this->img = $img;
     }
 }

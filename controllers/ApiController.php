@@ -27,6 +27,22 @@ class ApiController extends Controller
         echo json_encode($params);
     }
 
+    public function actionFile() {
+//
+//        $params = [
+//            'error' => false,
+//            'file' => $_FILES['name'],
+//            'title' => App::call()->request->getParams()['title'],
+//            'price' => App::call()->request->getParams()['price'],
+//            'description' => App::call()->request->getParams()['description']
+//        ];
+//
+//        //$action = App::call()->request->getParams()['action'];
+//        //App::call()->runController('product', $action, true);
+//        header('Content-Type: application/json');
+//        echo json_encode($params);
+    }
+
     public function actionProduct()
     {
         $action = App::call()->request->getParams()['action'];

@@ -11,8 +11,6 @@
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     import LoginForm from './LoginForm.vue';
     import UserBar from './UserBar.vue';
     import Menu from './Menu.vue';
@@ -26,7 +24,7 @@
         },
         computed: {
             getStoreAuth () {
-                return store.getters.getAuth;
+                return this.$store.getters.getAuth;
             }
         }
     }

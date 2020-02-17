@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import AdminPage from "./components/pages/AdminPage";
 
 
 Vue.use(VueRouter);
@@ -7,8 +8,6 @@ Vue.use(VueRouter);
 const HomePage      = () => import(/* webpack-chunk-name: "HomePage" */     './components/pages/HomePage.vue');
 const CatalogPage   = () => import(/* webpack-chunk-name: "CatalogPage" */  './components/pages/CatalogPage.vue');
 const CartPage      = () => import(/* webpack-chunk-name: "CartPage" */     './components/pages/CartPage.vue');
-const CardPage      = () => import(/* webpack-chunk-name: "CardPage" */     './components/pages/CardPage.vue');
-const OrderPage     = () => import(/* webpack-chunk-name: "OrderPage" */    './components/pages/OrderPage.vue');
 const ProfilePage   = () => import(/* webpack-chunk-name: "ProfilePage" */  './components/pages/ProfilePage.vue');
 
 export default new VueRouter({
@@ -32,21 +31,15 @@ export default new VueRouter({
             props: true
         },
         {
-            name: 'card',
-            path: '/card/:id',
-            component: CardPage,
-            props: true
-        },
-        {
-            name: 'order',
-            path: '/order',
-            component: OrderPage,
-            props: true
-        },
-        {
             name: 'profile',
             path: '/profile',
             component: ProfilePage,
+            props: true
+        },
+        {
+            name: 'admin',
+            path: '/admin',
+            component: AdminPage,
             props: true
         }
     ],

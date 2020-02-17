@@ -65,6 +65,13 @@ abstract class Repository implements IModel
         return App::call()->db->queryAll($sql, ['value' => $value]);
     }
 
+    public function getAllWhereLIKE($field, $value)
+    {
+        $tableName = $this->getTableName();
+        $sql = "SELECT * FROM {$tableName} WHERE `$field` LIKE :value";
+        return App::call()->db->queryAll($sql, ['value' => '%'.$value.'%']);
+    }
+
     public function insert(Entity $entity)
     {
         $params = [];

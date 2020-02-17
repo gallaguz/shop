@@ -1,25 +1,22 @@
+import Axios from "axios";
+
 export default {
     state: {
         catalog: [],
         page: 0
     },
     actions: {
-        getApiCatalog ({ commit }) {
-            fetch('/api/product/', {
-                method: 'POST',
-                body: JSON.stringify({
+        getApiCatalog ({ commit, state }) {
+            Axios.post(
+                '/api/product/',
+                {
                     action: 'catalog',
-                    page: this.page
-                }),
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
-                .then(res => {
-                    commit('setPage', res.page);
-                    commit('setCatalog', res.catalog);
-                });
+                    page: state.page
+                }
+            ).then((response) => {
+                commit('setPage', response.data.page);
+                commit('setCatalog', response.data.catalog);
+            });
         }
     },
     mutations: {

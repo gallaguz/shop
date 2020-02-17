@@ -1,43 +1,30 @@
 <template>
     <div>
         <p>Каталог товаров</p>
+        <hr>
+        <ul>
+            <li v-for="item in getStoreCatalog">
+                <CatalogItem
+                    :item="item"/>
+            </li>
+        </ul>
 
-
-        <div v-for="item in getStoreCatalog">
-            <router-link :to="{ name: 'card', params: { id: item.id, item: item } }">
-                {{ item.title }}
-            </router-link>
-            <br>
-            <img width="100" :src="imgDir+item.img"/>
-            <br>
-            Цена: {{ item.price }} денег <br>
-            <button @click="handleBuyClick(item)">Купить</button>
-            <hr>
-        </div>
 
         <button v-on:click="getApiCatalog">Показать ещё</button>
     </div>
 </template>
 
 <script>
-    import store from '../../store/index.js';
+    import CatalogItem from "../elements/CatalogItem";
 
     export default {
         name: 'Catalog',
-        data: function () {
-            return {
-                imgDir: '/img/',
-                page: 0,
-                catalog: [],
-                test: []
-            }
+        components: {
+            CatalogItem
         },
         methods: {
             getApiCatalog() {
-                store.dispatch('getApiCatalog');
-            },
-            handleBuyClick(item) {
-                store.dispatch('handleBuyClick', item);
+                this.$store.dispatch('getApiCatalog');
             }
         },
         created () {
@@ -45,10 +32,11 @@
         },
         mounted() {
             this.getApiCatalog();
+            this.$store.dispatch('clearQuery');
         },
         computed: {
             getStoreCatalog () {
-                return store.getters.getCatalog;
+                return this.$store.getters.getCatalog;
             }
 
         }

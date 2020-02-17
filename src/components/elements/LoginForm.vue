@@ -39,8 +39,6 @@
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     export default {
         name: "LoginForm",
         data: function () {
@@ -52,7 +50,7 @@
         },
         methods: {
             logIn() {
-                store.dispatch('logIn',
+                this.$store.dispatch('logIn',
                     {
                         username: this.username,
                         password: this.password,

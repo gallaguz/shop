@@ -5,55 +5,54 @@
         <CartItem
                 v-for="item in getStoreCart"
                 :key="item.id"
-                :title="item.title"
-                :id="item.id"
-                :count="item.count"
-                :price="item.price"
+                :item="item"
                 @changed="handleQuantityChange"
                 @deleted="handleDelete"
         />
         <hr>
         Всего: {{ total }} денег
+        <hr>
+        <AddOrder />
     </div>
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     import CartItem from "../elements/CartItem.vue";
+    import AddOrder from "../elements/AddOrder";
 
     export default {
         name: "CartPage",
         components: {
-            CartItem
+            CartItem,
+            AddOrder
         },
         methods: {
             getApiCart() {
-                store.dispatch('getApiCart');
+                this.$store.dispatch('getApiCart');
             },
             handleQuantityChange(item) {
-                store.dispatch('handleCartChange', item);
+                this.$store.dispatch('handleCartChange', item);
             },
             handleDelete(id) {
-                store.dispatch('handleDeleteClick', id);
+                this.$store.dispatch('handleDeleteClick', id);
             }
         },
         computed: {
             getStoreCart () {
-                return store.getters.getCart;
+                return this.$store.getters.getCart;
             },
             total() {
-                return store.getters.getCartTotal;
+                return this.$store.getters.getCartTotal;
             },
             count() {
-                return store.getters.getCartCount;
+                return this.$store.getters.getCartCount;
             }
         },
         created() {
             this.getApiCart();
         },
         mounted() {
-
+            this.$store.dispatch('clearQuery');
         }
     }
 </script>

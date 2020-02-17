@@ -1,84 +1,63 @@
+import Axios from "axios";
+
 export default {
     state: {
         cart: []
     },
     actions: {
         getApiCart({commit}) {
-            fetch('/api/cart/', {
-                method: 'POST',
-                body: JSON.stringify({
+            Axios.post(
+                '/api/cart/',
+                {
                     action: 'get'
-                }),
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
-                .then(res => {
-                    this.cart = res.cart;
-
-                    commit('setCart', res.cart);
-                });
+                }
+            ).then((response) => {
+                if (response.data.error === false) {
+                    commit('setCart', response.data.cart);
+                }
+            });
         },
         handleBuyClick({state, commit}, item) {
             const cartItem = state.cart.find((cartItem) => +cartItem.id === +item.id);
-            fetch(`/api/cart/`, {
-                method: 'POST',
-                body: JSON.stringify(
-                    {
-                        action: 'add',
-                        id: item.id
-                    }
-                ),
-                headers: {
-                    'Content-type': 'application/json',
+
+            Axios.post(
+                '/api/cart/',
+                {
+                    action: 'add',
+                    id: item.id
                 }
-            }).then(res => res.json())
-                .then(res => {
-                    if (cartItem) {
-                        cartItem.count++;
-                    } else {
-                        commit('pushProductToCart', item);
-                    }
-                });
+            ).then((response) => {
+                if (cartItem) {
+                    cartItem.count++;
+                } else {
+                    commit('pushProductToCart', item);
+                }
+            });
         },
         handleDeleteClick({state, commit}, id) {
             const cartItem = state.cart.find((cartItem) => +cartItem.id === +id);
 
             if (cartItem && cartItem.count > 1) {
-                fetch(`/api/cart/`, {
-                    method: 'POST',
-                    body: JSON.stringify(
-                        {
-                            action: 'update',
-                            id: id,
-                            count: cartItem.count - 1
-                        }
-                    ),
-                    headers: {
-                        'Content-type': 'application/json',
+                Axios.post(
+                    '/api/cart/',
+                    {
+                        action: 'update',
+                        id: id,
+                        count: cartItem.count - 1
                     }
-                }).then(res => res.json())
-                    .then(res => {
-                        cartItem.count--;
-                    });
+                ).then((response) => {
+                    cartItem.count--;
+                });
             } else {
-                fetch(`/api/cart/`, {
-                    method: 'POST',
-                    body: JSON.stringify(
-                        {
-                            action: 'delete',
-                            id: id
-                        }
-                    ),
-                    headers: {
-                        'Content-type': 'application/json',
+                Axios.post(
+                    '/api/cart/',
+                    {
+                        action: 'delete',
+                        id: id
                     }
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        commit('deleteProductFromCart', id);
-                    });
+                ).then((response) => {
+                    commit('deleteProductFromCart', id);
+                });
             }
         },
         handleCartChange({state, commit}, item) {
@@ -87,27 +66,28 @@ export default {
             cartItem.count = item.count;
 
             if (cartItem && item.count < 1) {
-                commit('deleteProductFromCart', item.id);
-            } else {
-                fetch(`/api/cart/`, {
-                    method: 'POST',
-                    body: JSON.stringify(
-                        {
-                            action: 'update',
-                            id: item.id,
-                            count: item.count
-                        }
-                    ),
-                    headers: {
-                        'Content-type': 'application/json',
+                Axios.post(
+                    '/api/cart/',
+                    {
+                        action: 'delete',
+                        id: item.id
                     }
-                })
-                    .then(res => res.json())
-                    .then(res => {
-                        console.log(res);
-                    });
+                ).then((response) => {
+                    commit('deleteProductFromCart', item.id);
+                });
+            } else {
+                Axios.post(
+                    '/api/cart/',
+                    {
+                        action: 'update',
+                        id: item.id,
+                        count: item.count
+                    }
+                ).then((response) => {
+
+                });
             }
-        },
+        }
     },
     mutations: {
         setCart(state, cart) {
@@ -117,7 +97,7 @@ export default {
             state.cart.push({...item, count: 1});
         },
         deleteProductFromCart(state, id) {
-            state.cart = state.cart.filter((item) => item.id !== id);
+            state.cart = state.cart.filter((item) => +item.id !== +id);
         },
     },
     getters: {

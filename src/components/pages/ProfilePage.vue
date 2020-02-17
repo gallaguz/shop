@@ -10,7 +10,7 @@
         <hr>
         История заказов:
         <hr>
-        <Orders />
+        <Orders/>
     </div>
     <div v-else>
         Войдите
@@ -18,8 +18,6 @@
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     import Orders from '../elements/Orders';
 
     export default {
@@ -33,26 +31,31 @@
             }
         },
         methods: {
-            getOrders()
-            {
-
+            getUser() {
+                this.$store.dispatch('getApiProfile');
             }
         },
+        created() {
+            this.getUser();
+        },
+        mounted() {
+            this.$store.dispatch('clearQuery');
+        },
         computed: {
-            getStoreUserId () {
-                return store.getters.getUserId;
+            getStoreUserId() {
+                return this.$store.getters.getUserId;
             },
-            getStoreAuth () {
-                return store.getters.getAuth;
+            getStoreAuth() {
+                return this.$store.getters.getAuth;
             },
-            getStoreUsername () {
-                return store.getters.getUsername;
+            getStoreUsername() {
+                return this.$store.getters.getUsername;
             },
-            getStorePhone () {
-                return store.getters.getPhone;
+            getStorePhone() {
+                return this.$store.getters.getPhone;
             },
-            getStoreEmail () {
-                return store.getters.getEmail;
+            getStoreEmail() {
+                return this.$store.getters.getEmail;
             }
         }
     }

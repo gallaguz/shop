@@ -15,18 +15,24 @@
                 Корзина {{ count }}
             </router-link>
         </li>
+        <li v-if="getStoreUsername === 'admin'">
+            <router-link to="/admin">
+                Админ панель
+            </router-link>
+        </li>
     </ul>
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     export default {
         name: "Menu",
         props: [],
         computed: {
             count() {
-                return store.getters.getCartCount;
+                return this.$store.getters.getCartCount;
+            },
+            getStoreUsername () {
+                return this.$store.getters.getUsername;
             }
         }
     }

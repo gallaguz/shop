@@ -24,13 +24,19 @@ class OrderController extends Controller
 
     public function actionGetAll()
     {
-        if (!is_null(App::call()->session->getUser_id())) {
-            $orders = App::call()->orderRepository->getAllWhere(
-                'user_id', App::call()->session->getUser_id());
+        if ((App::call()->request->getParams()['admin']) &&
+        App::call()->session->getUsername() == 'admin') {
+            $orders = App::call()->orderRepository->getAll();
         } else {
-            $orders = App::call()->orderRepository->getAllWhere(
-                'session_id', App::call()->session->getSession_id());
+            if (!is_null(App::call()->session->getUser_id())) {
+                $orders = App::call()->orderRepository->getAllWhere(
+                    'user_id', App::call()->session->getUser_id());
+            } else {
+                $orders = App::call()->orderRepository->getAllWhere(
+                    'session_id', App::call()->session->getSession_id());
+            }
         }
+
 
         $params = [
             'error' => false,
@@ -53,7 +59,18 @@ class OrderController extends Controller
             $status = 0;
         }
 
-        echo $this->render('order', ['products' => $cart, 'status' => $status]);
+        $params = [
+            'error' => false,
+            'order' => [
+                'id' => App::call()->request->getParams()['id'],
+                'cart' => $cart
+            ],
+            'status' => $status
+        ];
+
+        $this->runRender('orders', $params);
+
+        //echo $this->render('order', ['products' => $cart, 'status' => $status]);
     }
 
     public function actionAdd()

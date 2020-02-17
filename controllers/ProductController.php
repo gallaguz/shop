@@ -13,9 +13,22 @@ class ProductController extends Controller
         $this->actionCatalog();
     }
 
+    public function actionSearch ()
+    {
+        $query = App::call()->request->getParams()['query'];
+
+        $items = App::call()->productRepository->getAllWhereLIKE('title', $query);
+
+        $params = [
+            'error' => false,
+            'items' => $items
+        ];
+        $this->runRender('card', $params);
+    }
+
     public function actionCard()
     {
-        $id = (int)App::call()->request->getParams()['id'];;
+        $id = (int)App::call()->request->getParams()['id'];
 
         if($this->isApi()) {
             $product = App::call()->productRepository->getOneArr($id);

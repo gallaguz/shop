@@ -1,54 +1,54 @@
 <template>
     <div>
         <Header/>
-
+        <hr>
+        <Search />
+        <FilteredItems />
+        <hr>
         <router-view />
-
+        <hr>
         <Footer />
     </div>
 </template>
 
 <script>
-    import store from '../store/index.js';
-
     import Header from './elements/Header.vue';
     import Footer from './elements/Footer.vue';
+    import Search from "./elements/Search";
+    import FilteredItems from "./elements/FilteredItems";
 
     export default {
         name: 'App',
         components: {
             Header,
-            Footer
-        },
-        created () {
-            this.getUser();
-            this.getApiCart();
+            Footer,
+            Search,
+            FilteredItems
         },
         methods: {
             getUser() {
-                store.dispatch('getApiProfile');
+                this.$store.dispatch('getApiProfile');
             },
 
             getApiCart() {
-                store.dispatch('getApiCart');
+                this.$store.dispatch('getApiCart');
             }
         },
+        created() {
+            this.getUser();
+        },
         computed: {
-            filteredItems() {
-                return this.items.filter((item) => {
-                    const regexp = new RegExp(this.query, 'i');
-
-                    return regexp.test(item.title);
-                });
+            getFilteredItems () {
+                return this.$store.getters.getFilteredItems;
             },
             getStoreUserId () {
-                return store.getters.getUserId;
+                return this.$store.getters.getUserId;
             },
             getStoreAuth () {
-                return store.getters.getAuth;
+                return this.$store.getters.getAuth;
             },
             getStoreUsername () {
-                return store.getters.getUsername;
+                return this.$store.getters.getUsername;
             }
         }
     }

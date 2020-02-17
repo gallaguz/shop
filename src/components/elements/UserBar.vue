@@ -15,8 +15,6 @@
 </template>
 
 <script>
-    import store from '../../store/index.js';
-
     export default {
         name: "UserBar",
         data: function () {
@@ -24,15 +22,15 @@
         },
         methods: {
             logout() {
-                store.dispatch('logOut');
+                this.$store.dispatch('logOut');
             }
         },
         computed: {
             getStoreUsername () {
-                return store.getters.getUsername;
+                return this.$store.getters.getUsername;
             },
             getStoreUserId () {
-                return store.getters.getUserId;
+                return this.$store.getters.getUserId;
             }
         }
     }

@@ -2,8 +2,7 @@
     <div>
         <div v-if="getStoreOrders.length">
             <div v-for="item in getStoreOrders">
-                Дата заказа: {{ item.date }} /
-                Статус: {{ item.status }}
+                <OrderItem :item="item" />
             </div>
         </div>
         <div v-else>
@@ -13,19 +12,21 @@
 </template>
 
 <script>
-    import store from '../../store/index.js';
+    import OrderItem from "./OrderItem";
 
     export default {
         name: "Orders",
-
+        components: {
+            OrderItem
+        },
         methods: {
             getOrders() {
-                store.dispatch('getApiOrders');
+                this.$store.dispatch('getApiOrders');
             }
         },
         computed: {
             getStoreOrders() {
-                return store.getters.getOrders;
+                return this.$store.getters.ORDERS;
             },
         },
         mounted() {

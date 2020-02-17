@@ -3,7 +3,7 @@
 //использовать для логирования, можно выводить даже массив
 //пример в index.php
 
-define('LOG', true);
+define('LOG', false);
 
 function _log($s, $suffix = '')
 {

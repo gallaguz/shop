@@ -1,70 +1,52 @@
+import Axios from "axios";
+
 export default {
     state: {
         auth: false,
+        profile: false,
         id: null,
         username: null,
         phone: null,
         email: null
     },
     actions: {
-        getApiProfile ({ commit }, id) {
-            fetch(`/api/user/`, {
-                method: 'POST',
-                body: JSON.stringify({
+        getApiProfile ({ commit }) {
+            Axios.post(
+                '/api/user/',
+                {
                     action: 'getProfile'
-                }),
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
-                .then(res => {
-
-                    console.log(res.profile);
-
-                    commit('setProfile', res.profile);
-                })
+                }
+            ).then((response) => {
+                commit('setProfile', response.data.profile);
+            });
         },
         logIn({ commit }, {username, password, save}) {
-            fetch(`/api/user/`, {
-                method: 'POST',
-                body: JSON.stringify({
+            Axios.post(
+                '/api/user/',
+                {
                     action: 'login',
                     username: username,
                     password: password,
                     save: save
-                }),
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.error === false) {
-                        commit('doAuth', res.username
-                        );
-                    }
-                });
+                }
+            ).then((response) => {
+                if (response.data.error === false) {
+                    commit('doAuth', response.data.username
+                    );
+                }
+            });
         },
         logOut({ commit }) {
-            fetch(`/api/user/`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'logout'
-                }),
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.error === false) {
-                        commit('doLogOut');
-                    }
-                });
-        },
-        getApiOrders ({ commit }, id) {
-
+            Axios.post(
+                '/api/user/',
+                {
+                    action: 'logOut'
+                }
+            ).then((response) => {
+                if (response.data.error === false) {
+                    commit('doLogOut');
+                }
+            });
         }
     },
     mutations: {
@@ -74,9 +56,14 @@ export default {
         },
         doLogOut (state) {
             state.auth = false;
+            state.user_id = false;
+            state.username = false;
+            state.phone = false;
+            state.email = false;
         },
         setProfile (state, profile) {
             state.auth = profile.auth;
+            state.profile = profile;
             state.user_id = profile.user_id;
             state.username = profile.username;
             state.phone = profile.phone;
@@ -86,6 +73,9 @@ export default {
     getters: {
         getAuth(state){
             return state.auth;
+        },
+        getProfile(state){
+            return state.profile;
         },
         getUserId(state) {
             return state.user_id;

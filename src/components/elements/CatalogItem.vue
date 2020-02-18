@@ -1,8 +1,9 @@
 <template>
     <div class="catalogItem">
-        <h4 class="descriptionSeen"
-            @click="descriptionSeen = !descriptionSeen">
-            {{ this.item.title }}
+        <h4 class="descriptionSeen">
+            <router-link :to="`/product/${this.item.id}`">
+                {{ this.item.title }}
+            </router-link>
         </h4>
 
         <img @click="descriptionSeen = !descriptionSeen"

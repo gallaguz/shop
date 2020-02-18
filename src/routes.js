@@ -9,8 +9,11 @@ const HomePage      = () => import(/* webpack-chunk-name: "HomePage" */     './c
 const CatalogPage   = () => import(/* webpack-chunk-name: "CatalogPage" */  './components/pages/CatalogPage.vue');
 const CartPage      = () => import(/* webpack-chunk-name: "CartPage" */     './components/pages/CartPage.vue');
 const ProfilePage   = () => import(/* webpack-chunk-name: "ProfilePage" */  './components/pages/ProfilePage.vue');
+const ProductPage   = () => import(/* webpack-chunk-name: "ProductPage" */  './components/pages/ProductPage.vue');
 
 export default new VueRouter({
+    mode: 'history',
+    //base: __dirname,
     routes: [
         {
             name: 'home',
@@ -23,6 +26,12 @@ export default new VueRouter({
             component: CatalogPage,
             props: true
 
+        },
+        {
+            name: 'product',
+            path: '/product/:id',
+            component: ProductPage,
+            props: true
         },
         {
             name: 'cart',
@@ -43,5 +52,6 @@ export default new VueRouter({
             props: true
         }
     ],
-    mode: 'history',
+
+
 });
